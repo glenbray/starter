@@ -1,0 +1,30 @@
+.pagy-nav .page > a {
+  @apply link-blue text-xl px-1;
+}
+
+.pagy-nav .page > a:hover {
+  @apply text-gray-900;
+}
+
+.pagy-nav > .page.active {
+  @apply text-gray-800 text-xl px-1 font-bold;
+}
+
+.pagy-nav > .page.prev.disabled, .page.next.disabled {
+  @apply hidden;
+}
+
+.pagy-nav > .page.gap {
+  @apply text-gray-700;
+}
+
+.pagy-nav .page:not(.active):not(.prev):not(.next) {
+  @apply hidden;
+}
+
+@screen md {
+  .pagy-nav .page:not(.active):not(.prev):not(.next) {
+    @apply inline-flex;
+  }
+}
+

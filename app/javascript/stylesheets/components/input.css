@@ -1,0 +1,55 @@
+.hint {
+  @apply text-sm text-gray-500 font-normal;
+}
+
+.error {
+  @apply text-red-600 text-sm mt-1;
+}
+
+.error-field {
+  @apply text-red-500 mt-0 text-xs;
+}
+
+.error-notification {
+  @apply bg-red-100;
+  @apply text-red-700;
+  @apply rounded;
+  @apply px-3;
+  @apply py-5;
+  @apply mb-8;
+  @apply text-center;
+  @apply text-lg;
+  @apply font-semibold;
+}
+
+.input-field {
+  @apply border;
+  @apply rounded;
+  @apply w-full;
+  @apply p-2;
+  @apply text-gray-900;
+  @apply leading-tight;
+  @apply bg-gray-200;
+  @apply text-base;
+}
+
+.input-field[type="file"] {
+  @apply border-0 bg-white px-0;
+}
+
+.input-field:focus {
+  @apply outline-none border border-blue-300;
+}
+
+.input-label {
+  @apply block;
+  @apply text-gray-700;
+  @apply text-base;
+  @apply mb-2;
+  @apply tracking-wide;
+  @apply font-normal;
+}
+
+.field_with_errors > .input-field {
+  @apply border-red-500 border-2;
+}

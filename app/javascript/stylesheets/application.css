@@ -1,0 +1,48 @@
+/* purgecss start ignore */
+@import "tailwindcss/base";
+@import "base.css";
+
+@import "tailwindcss/components";
+@import "components.css";
+@import "components/input.css";
+@import "components/button_components.css";
+@import "components/pagination.css";
+@import "components/pill_components.css";
+/* purgecss end ignore */
+
+@import "tailwindcss/utilities";
+
+html {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+/* Prevent layout from shifting when turbolinks is used */
+.fontawesome-i2svg-pending body {
+  display: none;
+}
+
+.fixed-img {
+  max-width: none;
+}
+
+.auth-seperator {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #e7e7e7;
+  line-height: 0.4em;
+}
+
+.auth-or {
+  background:#fff;
+  padding:0 10px;
+}
+
+.btn-google {
+  background-color: #de5246;
+  text-align: center;
+  color: #ffffff;
+}
+
+.btn-google:hover {
+  background-color: #c84a3f;
+}
