@@ -5,6 +5,7 @@ def add_gems
   gem "pundit"
   gem "draper"
   gem "skylight"
+  gem "omniauth-google-oauth2"
 
   gem_group :development, :test do
     gem "rspec-rails"
@@ -56,6 +57,23 @@ def add_users
     migration = Dir.glob("db/migrate/*").max_by{ |f| File.mtime(f) }
     gsub_file migration, /:admin/, ":admin, default: false"
   end
+
+  gsub_file 'config/routes.rb', 'devise_for :users', ''
+
+  route 'devise_for :users, controllers: {omniauth_callbacks: "users/omniauth_callbacks"}'
+
+  omniauth = <<~OMNIAUTH
+      config.omniauth :google_oauth2,
+        ENV["GOOGLE_CLIENT_ID"],
+        ENV["GOOGLE_CLIENT_SECRET"],
+        access_type: "online"
+  OMNIAUTH
+
+  inject_into_file(
+    "config/initializers/devise.rb",
+    omniauth,
+    after: "# config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'"
+  )
 end
 
 def install_js_deps
