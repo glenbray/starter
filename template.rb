@@ -8,7 +8,7 @@ def add_gems
   gem "omniauth-google-oauth2"
 
   gem_group :development, :test do
-    gem "rspec-rails"
+    gem "rspec-rails" if install_rspec?
     gem "pry-rails"
     gem "pry-byebug"
     gem "factory_bot_rails"
@@ -63,6 +63,7 @@ def add_users
   route 'devise_for :users, controllers: {omniauth_callbacks: "users/omniauth_callbacks"}'
 
   omniauth = <<~OMNIAUTH
+
       config.omniauth :google_oauth2,
         ENV["GOOGLE_CLIENT_ID"],
         ENV["GOOGLE_CLIENT_SECRET"],
@@ -135,6 +136,11 @@ def run_standardrb
 end
 
 source_paths
+
+def install_rspec?
+  @install_rpsec ||= yes?("Did you want to use rspec?")
+end
+
 add_gems
 
 after_bundle do
@@ -150,7 +156,7 @@ after_bundle do
   add_tailwind
   add_live_reload
   add_draper
-  add_rspec
+  add_rspec if install_rspec?
   add_routes
 
   copy_file "Procfile.dev"
