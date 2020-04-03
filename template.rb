@@ -5,6 +5,7 @@ def add_gems
   gem "pundit"
   gem "draper"
   gem "skylight"
+  gem "simple_form"
   gem "omniauth-google-oauth2"
 
   gem_group :development, :test do
@@ -131,6 +132,10 @@ def add_routes
   route 'get "/manifest.json" => "service_worker#manifest"'
 end
 
+def add_simple_form
+  generate "simple_form:install"
+end
+
 def run_standardrb
   run "bundle exec standardrb --fix"
 end
@@ -155,6 +160,7 @@ after_bundle do
   copy_templates
   add_tailwind
   add_live_reload
+  add_simple_form
   add_draper
   add_rspec if install_rspec?
   add_routes
