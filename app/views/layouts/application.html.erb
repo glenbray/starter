@@ -21,7 +21,13 @@
     <%= yield :javascript  %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="min-h-screen antialiased text-gray-800 bg-gray-75">
+    <div id="root"
+      data-controller="notifications"
+      data-notifications-flash="<%= flash.to_json %>"
+    >
+
+      <%= yield %>
+    </div>
   </body>
 </html>

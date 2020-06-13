@@ -13,7 +13,19 @@
 @import "tailwindcss/utilities";
 
 html {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: "Noto Sans", sans-serif;
+}
+
+.bg-gray-25 {
+  background-color: #fafafa;
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+.bg-gray-75 {
+  background-color: #f5f6fa;
 }
 
 /* Prevent layout from shifting when turbolinks is used */
@@ -33,8 +45,8 @@ html {
 }
 
 .auth-or {
-  background:#fff;
-  padding:0 10px;
+  background: #fff;
+  padding: 0 10px;
 }
 
 .btn-google {

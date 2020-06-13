@@ -94,7 +94,8 @@ def install_js_deps
       @fortawesome/fontawesome-svg-core \
       @fortawesome/free-brands-svg-icons \
       @fortawesome/free-regular-svg-icons \
-      @fortawesome/free-solid-svg-icons
+      @fortawesome/free-solid-svg-icons \
+      noty
   YARN
 
   run "yarn add prettier webpack-bundle-analyzer -D"
