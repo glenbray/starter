@@ -5,7 +5,7 @@ Generate new rails projects with the following preconfigured
 - devise
 - tailwindcss
 - guard livereload
-- rspec
+- rspec or minitest
 - service worker
 
 #### How to run

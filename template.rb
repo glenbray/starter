@@ -35,11 +35,12 @@ def add_gems
     gem "guard-livereload"
     gem "rack-livereload"
     gem "skunk"
+    gem "solargraph"
   end
 end
 
 def source_paths
-  [File.expand_path(File.dirname(__FILE__))]
+  [__dir__]
 end
 
 def add_users
@@ -48,27 +49,27 @@ def add_users
 
   # Configure Devise
   environment "config.action_mailer.default_url_options = { host: 'localhost', port: 5000 }",
-              env: 'development'
+    env: "development"
 
   # Create Devise User
   generate :devise, "User", "username", "name", "admin:boolean"
 
   # set admin boolean to false by default
   in_root do
-    migration = Dir.glob("db/migrate/*").max_by{ |f| File.mtime(f) }
+    migration = Dir.glob("db/migrate/*").max_by { |f| File.mtime(f) }
     gsub_file migration, /:admin/, ":admin, default: false"
   end
 
-  gsub_file 'config/routes.rb', 'devise_for :users', ''
+  gsub_file "config/routes.rb", "devise_for :users", ""
 
   route 'devise_for :users, controllers: {omniauth_callbacks: "users/omniauth_callbacks"}'
 
   omniauth = <<~OMNIAUTH
 
-      config.omniauth :google_oauth2,
-        ENV["GOOGLE_CLIENT_ID"],
-        ENV["GOOGLE_CLIENT_SECRET"],
-        access_type: "online"
+    config.omniauth :google_oauth2,
+      ENV["GOOGLE_CLIENT_ID"],
+      ENV["GOOGLE_CLIENT_SECRET"],
+      access_type: "online"
   OMNIAUTH
 
   inject_into_file(
@@ -98,7 +99,7 @@ def add_tailwind
   run "mkdir -p app/javascript/stylesheets"
   append_to_file("app/javascript/packs/application.js", 'import "stylesheets/application"')
   inject_into_file("./postcss.config.js",
-  "var tailwindcss = require('tailwindcss');\n",  before: "module.exports")
+    "var tailwindcss = require('tailwindcss');\n", before: "module.exports")
   inject_into_file("./postcss.config.js", "\n    tailwindcss('./app/javascript/stylesheets/tailwind.config.js'),", after: "plugins: [")
   copy_file "postcss.config.js", force: true
 end
@@ -111,7 +112,7 @@ def add_live_reload
   run "bundle exec guard init"
   run "bundle exec guard init livereload"
 
-  append_to_file 'config/environments/development.rb', after: 'Rails.application.configure do' do
+  append_to_file "config/environments/development.rb", after: "Rails.application.configure do" do
     <<-HEREDOC
       config.middleware.insert_before ActionDispatch::DebugExceptions, Rack::LiveReload
     HEREDOC
@@ -153,7 +154,7 @@ after_bundle do
 
   git :init
   git add: "."
-  git commit: %Q{ -m 'Initial commit' }
+  git commit: %( -m 'Initial commit' )
 
   add_users
   install_js_deps
