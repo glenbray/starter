@@ -12,6 +12,8 @@ def add_gems
   gem "omniauth-google-oauth2"
   gem "aws-sdk-s3"
   gem "view_component"
+  gem "anycable-rails", "~> 1.0.0.rc2"
+  gem "stimulus_reflex", "~> 3.2"
 
   gem_group :development, :test do
     gem "rspec-rails"
@@ -96,7 +98,8 @@ def install_js_deps
       @fortawesome/free-brands-svg-icons \
       @fortawesome/free-regular-svg-icons \
       @fortawesome/free-solid-svg-icons \
-      noty
+      noty \
+      stimulus_reflex
   YARN
 
   run "yarn add prettier webpack-bundle-analyzer -D"
@@ -122,6 +125,8 @@ def add_live_reload
 
   append_to_file "config/environments/development.rb", after: "Rails.application.configure do" do
     <<-HEREDOC
+      config.session_store :cache_store
+      config.action_cable.url = "ws://localhost:3334/cable"
       config.middleware.insert_before ActionDispatch::DebugExceptions, Rack::LiveReload
     HEREDOC
   end
@@ -147,6 +152,10 @@ end
 def add_routes
   route 'get "/service-worker.js" => "service_worker#service_worker"'
   route 'get "/manifest.json" => "service_worker#manifest"'
+end
+
+def add_stimulus_reflex
+  generate "stimulus_reflex:install"
 end
 
 def add_simple_form
