@@ -6,10 +6,14 @@ def add_gems
   gem "draper"
   gem "skylight"
   gem "simple_form"
+  gem "sidekiq"
+  gem "redis", ">= 4.0", require: ["redis", "redis/connection/hiredis"]
+  gem "hiredis"
   gem "omniauth-google-oauth2"
+  gem "aws-sdk-s3"
 
   gem_group :development, :test do
-    gem "rspec-rails" if install_rspec?
+    gem "rspec-rails"
     gem "pry-rails"
     gem "pry-byebug"
     gem "factory_bot_rails"
@@ -106,6 +110,7 @@ end
 
 def copy_templates
   directory "app", force: true
+  directory "config", force: true
 end
 
 def add_live_reload
@@ -143,10 +148,6 @@ end
 
 source_paths
 
-def install_rspec?
-  @install_rpsec ||= yes?("Did you want to use rspec?")
-end
-
 add_gems
 
 after_bundle do
@@ -163,7 +164,7 @@ after_bundle do
   add_live_reload
   add_simple_form
   add_draper
-  add_rspec if install_rspec?
+  add_rspec
   add_routes
 
   copy_file "Procfile.dev"
