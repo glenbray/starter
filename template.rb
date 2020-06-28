@@ -29,6 +29,7 @@ def add_gems
     gem "webdrivers"
     gem "webmock"
     gem "rack_session_access"
+    gem "database_cleaner-active_record"
   end
 
   gem_group :development do

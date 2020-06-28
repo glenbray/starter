@@ -1,3 +1,4 @@
 web: bundle exec rails s -b 0.0.0.0
+worker: bundle exec sidekiq
 webpack: ./bin/webpack-dev-server
 livereload: bundle exec guard -P livereload
