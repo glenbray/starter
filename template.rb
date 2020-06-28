@@ -11,6 +11,7 @@ def add_gems
   gem "hiredis"
   gem "omniauth-google-oauth2"
   gem "aws-sdk-s3"
+  gem "view_component"
 
   gem_group :development, :test do
     gem "rspec-rails"
@@ -126,6 +127,14 @@ def add_live_reload
   end
 end
 
+def add_view_component
+  append_to_file "config/application.rb", after: '# require "rails/test_unit/railtie"' do
+    <<-HEREDOC
+      \nrequire "view_component/engine"
+    HEREDOC
+  end
+end
+
 def add_rspec
   generate "rspec:install"
   copy_file "spec/rails_helper.rb", force: true
@@ -164,6 +173,7 @@ after_bundle do
   copy_templates
   add_tailwind
   add_live_reload
+  add_view_component
   add_simple_form
   add_draper
   add_rspec
