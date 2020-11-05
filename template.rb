@@ -12,7 +12,7 @@ def add_gems
   gem "omniauth-google-oauth2"
   gem "aws-sdk-s3"
   gem "view_component"
-  gem "anycable-rails", "~> 1.0.0.rc2"
+  gem "anycable-rails", "~> 1.0.3"
   gem "stimulus_reflex", "~> 3.2"
 
   gem_group :development, :test do
