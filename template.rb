@@ -4,7 +4,6 @@ def add_gems
   gem "pagy"
   gem "pundit"
   gem "draper"
-  gem "skylight"
   gem "simple_form"
   gem "sidekiq"
   gem "redis", ">= 4.0", require: ["redis", "redis/connection/hiredis"]
@@ -12,8 +11,6 @@ def add_gems
   gem "omniauth-google-oauth2"
   gem "aws-sdk-s3"
   gem "view_component"
-  gem "anycable-rails", "~> 1.0.3"
-  gem "stimulus_reflex", "~> 3.2"
 
   gem_group :development, :test do
     gem "rspec-rails"
@@ -89,20 +86,20 @@ end
 
 def install_js_deps
   run <<~YARN
-    yarn add tailwindcss \
-      tailwindcss-stimulus-components \
-      @tailwindcss/custom-forms \
+    yarn add tailwindcss-stimulus-components \
+      noty \
       @fullhuman/postcss-purgecss \
       @fortawesome/fontawesome-free \
       @fortawesome/fontawesome-svg-core \
       @fortawesome/free-brands-svg-icons \
       @fortawesome/free-regular-svg-icons \
       @fortawesome/free-solid-svg-icons \
-      noty \
-      stimulus_reflex
+      @tailwindcss/forms \
+      @tailwindcss/typography \
+      @tailwindcss/aspect-ratio
   YARN
 
-  run "yarn add prettier webpack-bundle-analyzer -D"
+  run "yarn add tailwindcss@npm:@tailwindcss/postcss7-compat postcss@^7 autoprefixer@^9 prettier webpack-bundle-analyzer -D"
 end
 
 def add_tailwind
@@ -154,10 +151,6 @@ def add_routes
   route 'get "/manifest.json" => "service_worker#manifest"'
 end
 
-def add_stimulus_reflex
-  generate "stimulus_reflex:install"
-end
-
 def add_simple_form
   generate "simple_form:install"
 end
@@ -171,7 +164,7 @@ source_paths
 add_gems
 
 after_bundle do
-  run_standardrb
+  # run_standardrb
 
   git :init
   git add: "."
@@ -188,8 +181,6 @@ after_bundle do
   add_rspec
   add_routes
 
-  copy_file "Procfile.dev"
-  copy_file ".env"
-
-  run_standardrb
+  copy_file "Procfile.dev", force: true
+  copy_file ".env", force: true
 end
