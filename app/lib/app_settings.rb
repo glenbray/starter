@@ -3,9 +3,7 @@
 class AppSettings
   class << self
     def aws_access_key_id
-      @aws_access_key_id ||= begin
-        credentials(:aws_access_key_id) || ENV["AWS_ACCESS_KEY_ID"]
-      end
+      @aws_access_key_id ||= credentials(:aws_access_key_id) || ENV["AWS_ACCESS_KEY_ID"]
     end
 
     def aws_secret_access_key
@@ -16,9 +14,7 @@ class AppSettings
     end
 
     def aws_bucket
-      @bucket ||= begin
-        credentials(:aws_bucket) || ENV["AWS_BUCKET"]
-      end
+      @bucket ||= credentials(:aws_bucket) || ENV["AWS_BUCKET"]
     end
 
     def aws_region

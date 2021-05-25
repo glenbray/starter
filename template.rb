@@ -183,4 +183,7 @@ after_bundle do
 
   copy_file "Procfile.dev", force: true
   copy_file ".env", force: true
+
+  git add: "."
+  git commit: %( -m 'Apply template' )
 end
