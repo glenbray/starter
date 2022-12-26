@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../../app/lib/app_settings"
+
 s3_options = {
   access_key_id: AppSettings.aws_access_key_id,
   secret_access_key: AppSettings.aws_secret_access_key,

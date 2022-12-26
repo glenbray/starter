@@ -6,11 +6,13 @@ def add_gems
   gem "draper"
   gem "simple_form"
   gem "sidekiq"
-  gem "redis", ">= 4.0", require: ["redis", "redis/connection/hiredis"]
-  gem "hiredis"
   gem "omniauth-google-oauth2"
   gem "aws-sdk-s3"
   gem "view_component"
+
+  gem "sidekiq-cron"
+  gem "sentry-rails"
+  gem "sentry-sidekiq"
 
   gem_group :development, :test do
     gem "rspec-rails"
@@ -24,9 +26,6 @@ def add_gems
   end
 
   gem_group :test do
-    gem "capybara"
-    gem "selenium-webdriver"
-    gem "webdrivers"
     gem "webmock"
     gem "rack_session_access"
     gem "database_cleaner-active_record"
@@ -37,10 +36,10 @@ def add_gems
     gem "binding_of_caller"
     gem "rails-erd"
     gem "guard"
-    gem "guard-livereload"
-    gem "rack-livereload"
+    gem "hotwire-livereload"
     gem "skunk"
     gem "solargraph"
+    gem "letter_opener"
   end
 end
 
@@ -53,7 +52,7 @@ def add_users
   generate "devise:install"
 
   # Configure Devise
-  environment "config.action_mailer.default_url_options = { host: 'localhost', port: 5000 }",
+  environment "config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }",
     env: "development"
 
   # Create Devise User
@@ -85,30 +84,39 @@ def add_users
 end
 
 def install_js_deps
-  run <<~YARN
-    yarn add tailwindcss-stimulus-components \
-      noty \
-      @fullhuman/postcss-purgecss \
-      @fortawesome/fontawesome-free \
-      @fortawesome/fontawesome-svg-core \
-      @fortawesome/free-brands-svg-icons \
-      @fortawesome/free-regular-svg-icons \
-      @fortawesome/free-solid-svg-icons \
-      @tailwindcss/forms \
-      @tailwindcss/typography \
-      @tailwindcss/aspect-ratio
-  YARN
-
-  run "yarn add tailwindcss@npm:@tailwindcss/postcss7-compat postcss@^7 autoprefixer@^9 prettier webpack-bundle-analyzer -D"
+  # run <<~YARN
+  #   yarn add tailwindcss-stimulus-components \
+  #     noty \
+  #     @fullhuman/postcss-purgecss \
+  #     @tailwindcss/forms \
+  #     @tailwindcss/typography \
+  #     @tailwindcss/aspect-ratio
+  # YARN
 end
 
 def add_tailwind
-  run "mkdir -p app/javascript/stylesheets"
-  append_to_file("app/javascript/packs/application.js", 'import "stylesheets/application"')
-  inject_into_file("./postcss.config.js",
-    "var tailwindcss = require('tailwindcss');\n", before: "module.exports")
-  inject_into_file("./postcss.config.js", "\n    tailwindcss('./app/javascript/stylesheets/tailwind.config.js'),", after: "plugins: [")
-  copy_file "postcss.config.js", force: true
+  run "tailwindcss:install"
+  # run "mkdir -p app/javascript/stylesheets"
+  # # append_to_file("app/javascript/packs/application.js", 'import "stylesheets/application"')
+  # inject_into_file("./postcss.config.js",
+  #   "var tailwindcss = require('tailwindcss');\n", before: "module.exports")
+  # inject_into_file("./postcss.config.js", "\n    tailwindcss('./app/javascript/stylesheets/tailwind.config.js'),", after: "plugins: [")
+  # copy_file "postcss.config.js", force: true
+end
+
+def add_fortawesome
+  run "./bin/importmap pin @fortawesome/fontawesome-free @fortawesome/fontawesome-svg-core @fortawesome/free-brands-svg-icons @fortawesome/free-regular-svg-icons @fortawesome/free-solid-svg-icons"
+
+  code = <<~JS
+    import {far} from "@fortawesome/free-regular-svg-icons"
+    import {fas} from "@fortawesome/free-solid-svg-icons"
+    import {fab} from "@fortawesome/free-brands-svg-icons"
+    import {library} from "@fortawesome/fontawesome-svg-core"
+    import "@fortawesome/fontawesome-free"
+    library.add(far, fas, fab)
+  JS
+
+  append_to_file("app/javascript/application.js", code)
 end
 
 def copy_templates
@@ -117,24 +125,7 @@ def copy_templates
 end
 
 def add_live_reload
-  run "bundle exec guard init"
-  run "bundle exec guard init livereload"
-
-  append_to_file "config/environments/development.rb", after: "Rails.application.configure do" do
-    <<-HEREDOC
-      config.session_store :cache_store
-      config.action_cable.url = "ws://localhost:3334/cable"
-      config.middleware.insert_before ActionDispatch::DebugExceptions, Rack::LiveReload
-    HEREDOC
-  end
-end
-
-def add_view_component
-  append_to_file "config/application.rb", after: '# require "rails/test_unit/railtie"' do
-    <<-HEREDOC
-      \nrequire "view_component/engine"
-    HEREDOC
-  end
+  rails_command "livereload:install"
 end
 
 def add_rspec
@@ -164,26 +155,31 @@ source_paths
 add_gems
 
 after_bundle do
-  # run_standardrb
+  run_standardrb
 
   git :init
   git add: "."
   git commit: %( -m 'Initial commit' )
 
   add_users
-  install_js_deps
+  # install_js_deps
   copy_templates
-  add_tailwind
   add_live_reload
-  add_view_component
   add_simple_form
   add_draper
   add_rspec
   add_routes
 
   copy_file "Procfile.dev", force: true
-  copy_file ".env", force: true
+  copy_file ".solargraph.yml", force: true
+  copy_file ".rubocop.yml", force: true
+  template ".env.erb", ".env"
+
+  copy_file "config/database.yml", force: true
+
+  rails_command "db:drop db:create db:migrate" if yes?("Run database migrations? (y/n)")
 
   git add: "."
+
   git commit: %( -m 'Apply template' )
 end
